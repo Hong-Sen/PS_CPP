@@ -22,10 +22,6 @@ long long fibonacci(int a){
 
 int main(){
     cin>>t;
-    fibo[1] = 1;
-    fibo[2] = 2;
-    fibo[3] = 4;
-    
     for(int i=0; i<t; i++){
         cin>>n;
         cout<<fibonacci(n)<<"\n";
