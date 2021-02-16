@@ -6,29 +6,28 @@ int main(){
     int n;
     int result = 0;
     stack<pair<int, int>> st;
-    pair<int, int> cur = make_pair(-1, -1);
     cin>>n;
     for(int i=0; i<n; i++){
-        int hw;
+        int hw,score,time;
         cin>>hw;
-        if(hw==1){
-            int score,time;
+        if(hw == 1){
             cin>>score>>time;
-            if(cur.first != -1)   st.push(cur);
-            cur = make_pair(score, time-1);
-        }
-        else{
-            if(cur.first != -1) cur.second--;
-        }
-        
-        if(cur.second == 0){
-            result += cur.first;
-            if(st.size()){
-                cur = st.top();
-                st.pop();
+            if(time == 1){
+                result += score;
             }
             else{
-                cur = make_pair(-1, -1);
+                st.push(make_pair(score, time-1));
+            }
+        }
+        else if(hw==0 && st.size()>0){
+            int tmpTime = st.top().second;
+            int tmpScore = st.top().first;
+            st.pop();
+            if(tmpTime == 1){
+                result += tmpScore;
+            }
+            else{
+                st.push(make_pair(tmpScore, tmpTime-1));
             }
         }
     }
