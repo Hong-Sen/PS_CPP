@@ -4,64 +4,47 @@
 #include <algorithm>
 using namespace std;
 
-int m[25][25];
-bool visited[25][25];
-int cntSum; //총 단지수
-vector<int> wholeCnt; //단지내 집 수
 int n;
+int map[25][25];
+bool visited[25][25];
+int dx[4] = { 1, -1, 0, 0 };
+int dy[4] = { 0, 0, 1, -1 };
+vector<int> v;
 int cnt;
 
-//상하좌우
-int deltax[] = {-1,1,0,0};
-int deltay[] = {0,0,-1,1};
-
-bool isValid(int a, int b){
-    return (a>=0 && a<n) &&(b>=0 && b<n);
-}
-
-void dfs(int a, int b){
+void dfs(int x,int y){
     cnt++;
-    visited[a][b] = true;
-    
-    //(a-1,b),(a+1,b),(a,b-1),(a,b+1)
+    visited[x][y] = true;
     for(int i=0; i<4; i++){
-        int dy = a + deltax[i];
-        int dx = b + deltay[i];
-        
-        if(isValid(dy, dx) && !visited[dy][dx] && m[dy][dx] == 1){
-            dfs(dy, dx);
-        }
-    }
-    
-}
-
-void Complex(int n){
-    for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++){
-            if(m[i][j] == 1 && !visited[i][j]){
-                cnt = 0;
-                dfs(i, j);
-                cntSum++;
-                wholeCnt.push_back(cnt);
-            }
-        }
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+        if(nx<0 || nx>=n || ny<0 || ny>=n)  continue;
+        if(map[nx][ny] == 1 && !visited[nx][ny])    dfs(nx, ny);
     }
 }
 
 int main(){
     cin>>n;
-    for(int i=0; i<n ;i++){
-        for(int j=0; j<n; j++)
-            scanf("%1d", &m[i][j]);
+    for(int i=0; i<n; i++){
+        string s;
+        cin>>s;
+        for(int j=0; j<n; j++){
+            map[i][j] = s.at(j)-48;
+        }
     }
-
-    Complex(n);
-
-    cout<< cntSum <<"\n";
-    sort(wholeCnt.begin(), wholeCnt.end());
-    for(int i=0; i<cntSum; i++)
-        cout<<wholeCnt[i]<<"\n";
-      
-        
     
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            if(map[i][j] == 1 && !visited[i][j]){
+                cnt = 0;
+                dfs(i, j);
+                v.push_back(cnt);
+            }
+                
+        }
+    }
+    cout<<v.size()<<"\n";
+    sort(v.begin(),v.end());
+    for(int i=0; i<v.size(); i++)
+    cout<<v[i]<<"\n";
 }
