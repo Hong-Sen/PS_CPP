@@ -1,69 +1,57 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <cmath>
 using namespace std;
+
+vector<int> v;
+vector<bool> sign; //0 = -, 1 = +
 
 int main(){
     string s;
-    bool flag = true;
-    vector<int> arr; //숫자만
-    vector<char> bracket; //괄호만
-    vector<int> num;
     cin>>s;
-    bracket.push_back('+');
-    
+    s += "+";
+    sign.push_back(1);
+    //배열에 숫자끼리,부호끼리 넣어주기
+    string strtmp = "";
     for(int i=0; i<s.length(); i++){
-        if(s.at(i) != '-' && s.at(i) != '+'){
-            int n = (int)(s.at(i)) - 48;
-            num.push_back(n);
+        if(s.at(i) == '+'){
+            if(strtmp != "")    v.push_back(stoi(strtmp));
+            strtmp = "";
+            sign.push_back(1);
         }
-        else if(s.at(i) == '-' || s.at(i) == '+' ){
-            bracket.push_back(s.at(i));
-            int realNum = 0;
-            int numSize = num.size()-1;
-            for(int j=0; j<num.size(); j++){
-                realNum += num[j]*(pow(10, numSize));
-                numSize--;
-            }
-            arr.push_back(realNum);
-            num.clear();
+        else if(s.at(i) == '-'){
+            if(strtmp != "")    v.push_back(stoi(strtmp));
+            strtmp = "";
+            sign.push_back(0);
+            
         }
-        if(i==s.length()-1){
-            int realNum = 0;
-            int numSize = num.size()-1;
-            for(int j=0; j<num.size(); j++){
-                realNum += num[j]*(pow(10, numSize));
-                numSize--;
-            }
-            arr.push_back(realNum);
+        else{
+            strtmp += s.at(i);
         }
     }
-    
-    int tmp=0,sum=arr[0],index=1;
-    while(index != arr.size()){
-        if(bracket[index] == '-'){
-            if(flag){
-                flag = false;
-                tmp += arr[index];
-            }
-            else{
-                sum -= tmp;
-                tmp = 0;
-                tmp += arr[index];
-            }
+    //-이면 괄호묶기
+    int tmp = 0;
+    int result = 0;
+    bool flag = false;
+    for(int i=0; i<v.size(); i++){
+        if(!sign[i] && !flag){
+            flag = true;
+            tmp += v[i];
         }
-        else {
-            if(!flag)   tmp += arr[index];
-            else    sum += arr[index];
+        else if(sign[i] && flag){
+            tmp += v[i];
         }
-        if(index == arr.size()-1){
-            sum -= tmp;
+        else if(!sign[i] && flag){
+            result += -tmp;
+            tmp = 0;
+            tmp += v[i];
         }
-//        cout<<"sum: "<<sum<<"\n";
-//        cout<<"tmp: "<<tmp<<"\n";
-        index++;
+        else{
+            result += v[i];
+        }
+        if(i==v.size()-1){
+            result += -tmp;
+        }
     }
-    cout<<sum<<"\n";
+    cout<<result<<"\n";
 }
