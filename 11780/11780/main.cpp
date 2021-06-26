@@ -1,25 +1,26 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#define INF 9999999
+#define INF 100001
 using namespace std;
 
 int n,m,a,b,c;
-int graph[101][101];
-vector<int> v[101][101];
+int bus[101][101];
+vector<int> path[101][101]; //경로
 
 void floyd(){
     for(int k=1; k<=n; k++){
         for(int i=1; i<=n; i++){
             for(int j=1; j<=n; j++){
-                if(graph[i][j] > graph[i][k] + graph[k][j]){
-                    graph[i][j] = graph[i][k] + graph[k][j];
-                    vector<int> tmp = v[k][j];
-                    v[i][j].clear();
-                    v[i][j] = v[i][k];
-                    for(int l=1; l<tmp.size(); l++)
-                        v[i][j].push_back(tmp[l]);
-                }
+                if(bus[i][k] + bus[k][j] < bus[i][j]){
+                    bus[i][j] = bus[i][k] + bus[k][j];
+                    path[i][j].clear();
+                    for(int l=0; l<path[i][k].size(); l++)
+                        path[i][j].push_back(path[i][k][l]);
+                    for(int l=1; l<path[k][j].size(); l++)
+                        path[i][j].push_back(path[k][j][l]);
                     
+                }
             }
         }
     }
@@ -29,37 +30,37 @@ int main(){
     cin>>n>>m;
     for(int i=1; i<=n; i++){
         for(int j=1; j<=n; j++){
-            graph[i][j] = INF;
-            if(i==j)    graph[i][j] = 0;
-            v[i][j].push_back(i);
-            v[i][j].push_back(j);
+            if(i==j)    bus[i][j] = 0;
+            else    bus[i][j] = INF;
         }
     }
-    
     for(int i=0; i<m; i++){
         cin>>a>>b>>c;
-        graph[a][b] = min(graph[a][b], c);
-    }
-    
-    floyd();
-    
-    for(int i=1; i<=n; i++){
-        for(int j=1; j<=n; j++)
-           cout<<graph[i][j]<<" ";
-        cout<<"\n";
-    }
-   
-    for(int i=1; i<=n; i++){
-        for(int j=1; j<=n; j++){
-            if(i==j)    cout<<0<<"\n";
-            else{
-                cout<<v[i][j].size()<<" ";
-                for(int k=0; k<v[i][j].size(); k++){
-                    cout<<v[i][j][k]<<" ";
-                }
-                cout<<"\n";
-            }
+        if(bus[a][b] > c){
+            bus[a][b] = c;
+            path[a][b].clear();
+            path[a][b].push_back(a);
+            path[a][b].push_back(b);
         }
     }
     
+   floyd();
+    
+    for(int i=1; i<=n; i++){
+        for(int j=1; j<=n; j++){
+            if(bus[i][j] == INF)    cout<<0<<" ";
+            else    cout<<bus[i][j]<<" ";
+        }
+        cout<<"\n";
+    }
+    
+    for(int i=1; i<=n; i++){
+        for(int j=1; j<=n; j++){
+            cout<<path[i][j].size()<<" ";
+            for(int k=0; k<path[i][j].size(); k++){
+                cout<<path[i][j][k]<<" ";
+            }
+            cout<<"\n";
+        }
+    }
 }
