@@ -7,15 +7,14 @@ using namespace std;
 
 int n;
 int arr[22][22];
-int result;
+int visited[22][22];
+int nowX, nowY;
 int sharkSize = 2;
-int eatCnt;
-int dis;
-int nowX,nowY;
-vector<pair<pair<int, int>, int>> v; //물고기의 거리, y, x
+int fishCnt;
 int dx[4] = {-1,1,0,0};
 int dy[4] = {0,0,-1,1};
-int visited[22][22];
+vector<pair<pair<int, int>, int>> closeFish; //{거리, y, x}
+int result;
 
 bool isInside(int x, int y){
     if(x>=0 && y>=0 && x<n && y<n) return true;
@@ -23,25 +22,19 @@ bool isInside(int x, int y){
 }
 
 void bfs(int x, int y){
-    dis = 987654321;
-    v.clear();
-    memset(visited, 0, sizeof(visited));
     queue<pair<int, int>> q;
-    q.push({x,y});
+    q.push({x, y});
     while (!q.empty()) {
-        int cx = q.front().first;
-        int cy = q.front().second;
+        int curX = q.front().first;
+        int curY = q.front().second;
         q.pop();
         for(int i=0; i<4; i++){
-            int nx = cx + dx[i];
-            int ny = cy + dy[i];
-            if(isInside(nx, ny) && visited[ny][nx] == 0 && sharkSize >= arr[ny][nx]){
-                visited[ny][nx] = visited[cy][cx] + 1;
-                if(arr[ny][nx] > 0 && arr[ny][nx] < sharkSize){
-                    if(dis >= visited[ny][nx]){
-                        dis = visited[ny][nx];
-                        v.push_back({{dis,ny},nx});
-                    }
+            int nx = curX + dx[i];
+            int ny = curY + dy[i];
+            if(visited[ny][nx] == 0 && isInside(nx, ny) && arr[ny][nx] <= sharkSize){
+                visited[ny][nx] = visited[curY][curX] + 1;
+                if(arr[ny][nx] < sharkSize && arr[ny][nx] > 0){
+                    closeFish.push_back({{visited[ny][nx],ny},nx});
                 }
                 q.push({nx, ny});
             }
@@ -55,28 +48,32 @@ int main(){
         for(int j=0; j<n; j++){
             cin>>arr[i][j];
             if(arr[i][j] == 9){
-                nowX = j;
                 nowY = i;
+                nowX = j;
                 arr[i][j] = 0;
-                continue;
             }
         }
     }
+    
     while (1) {
         bfs(nowX, nowY);
-        if(v.empty())   break;
+        if(closeFish.empty()){
+            cout<<result;
+            return 0;
+        }
         else{
-            sort(v.begin(),v.end());
-            eatCnt++;
-            result += v[0].first.first;
-            arr[v[0].first.second][v[0].second] = 0; //현재위치
-            nowY = v[0].first.second;
-            nowX = v[0].second;
-            if(sharkSize == eatCnt){
+            fishCnt++;
+            sort(closeFish.begin(), closeFish.end());
+            result += closeFish[0].first.first;
+            nowX = closeFish[0].second;
+            nowY = closeFish[0].first.second;
+            arr[nowY][nowX] = 0;
+            if(fishCnt == sharkSize){
                 sharkSize++;
-                eatCnt = 0;
+                fishCnt = 0;
             }
+            closeFish.clear();
+            memset(visited, 0, sizeof(visited));
         }
     }
-    cout<<result;
 }
