@@ -54,10 +54,12 @@ int main(){
     // 진실을 아는 사람들의 부모와 비교하기
     for(int i=0; i<M; i++){
         bool flag = true;
-        for(int k=0; k<party[i].size(); k++){
+        for(int j=0; j<party[i].size(); j++){
             if(!flag) break;
-            for(int j=0; j<truth; j++){
-                if(findParent(party[i][k]) == findParent(know[j])){
+            int p1 = party[i][j];
+            for(int k=0; k<truth; k++){
+                int p2 = know[k];
+                if(findParent(p1) == findParent(p2)){
                     flag = false;
                     break;
                 }
