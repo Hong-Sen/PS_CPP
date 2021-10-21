@@ -1,3 +1,5 @@
+// 트리에서 간선을 하나 지우면 항상 두 개의 트리로 분할 된다.
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
