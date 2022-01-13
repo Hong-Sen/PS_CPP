@@ -21,7 +21,6 @@ int main(){
             dp[i] = dp[i/2] + 1;
             before[i] = i/2;
         }
-//        cout<<i<<": "<<dp[i]<<" "<<before[i]<<"\n";
     }
     cout<<dp[n]<<"\n";
     while (1) {
