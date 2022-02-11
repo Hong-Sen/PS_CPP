@@ -1,10 +1,3 @@
-//
-//  main.cpp
-//  11779
-//
-//  Created by 홍세은 on 2022/02/10.
-//
-
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -12,10 +5,9 @@
 using namespace std;
 
 int n,m,a,b,c,start,finish;
-vector<pair<int, int>> adj[1001];
+int adj[1001][1001];
 int dist[1001];
 int before[1001];
-//vector<int> path[1001];
 
 void dijkstra(int s){
     priority_queue<pair<int, int>> pq;
@@ -25,24 +17,17 @@ void dijkstra(int s){
         int cur = pq.top().second;
         int cost = -pq.top().first;
         pq.pop();
-        cout<<cur<<" ";
         if(cost > dist[cur]) continue;
-        for(int i=0; i<adj[cur].size(); i++){
-            int next = adj[cur][i].first;
-            int nextCost = adj[cur][i].second + cost;
-            if(nextCost > dist[next]){
-                continue;
-            }
+        for(int i=1; i<=n; i++){
+            if(adj[cur][i] == INF) continue;
+            int next = i;
+            int nextCost = adj[cur][i] + cost;
+            if(nextCost >= dist[next]) continue;
             before[next] = cur;
             dist[next] = nextCost;
             pq.push({-nextCost, next});
         }
     }
-
-    for(int i=1; i<=n; i++)
-        cout<<before[i]<<" ";
-    cout<<"\n";
-
 }
 
 int main(){
@@ -53,18 +38,14 @@ int main(){
     
     for(int i=1; i<=n; i++){
         dist[i] = INF;
+        for(int j=1; j<=n; j++)
+            adj[i][j] = INF;
     }
     
     
     for(int i=0; i<m; i++){
         cin>>a>>b>>c;
-        if(adj[a].empty())  adj[a].push_back({b,c});
-        else {
-            if(adj[a][0].second > c){
-                adj[a][0].first = b;
-                adj[a][0].second = c;
-            }
-        }
+        adj[a][b] = min(adj[a][b], c);
     }
     cin>>start>>finish;
     
