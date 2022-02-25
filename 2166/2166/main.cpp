@@ -1,10 +1,9 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include <algorithm>
 using namespace std;
 
-long long n,x,y;
+int n,x,y;
 long long sum1,sum2;
 vector<pair<long long, long long>> v;
 
@@ -16,7 +15,7 @@ int main(){
     }
     v.push_back({v[0].first, v[0].second});
     for(int i=0; i<n; i++){
-        sum1 += v[i].first*v[i+1].second;
+        sum1 += v[i].first*v[i+1].second; //int*int 오버플로우 --> long long 으로 받기
         sum2 += v[i].second*v[i+1].first;
     }
     cout<<fixed;
