@@ -12,71 +12,58 @@ using namespace std;
 int N,M,r,c,d;
 int map[51][51];
 int cnt;
-int direction[4][2] = {{0,-1}, {-1,0}, {0,1}, {1,0}};
 
 void dfs(int row, int col, int dir){
+    // 청소 = 9
     map[row][col] = 9;
-    int nextR = 0;
-    int nextC = 0;
-    
     // 네 방향 모두 청소 or 벽
     if(map[row][col-1] != 0 && map[row-1][col] != 0 && map[row][col+1] != 0 && map[row+1][col] != 0) {
-        // 뒤쪽 방향 구하기
+        // c. 네 방향 모두 청소 or 벽 + 뒤쪽 방향 벽x
+        // d. 네 방향 모두 청소 or 벽 + 뒤쪽 방향 벽o
         switch (dir) {
             case 0:
-                nextR = row+1;
-                nextC = col;
+                if(map[row+1][col] == 9) dfs(row+1, col, dir);
+                else return;
                 break;
             case 1:
-                nextR = row;
-                nextC = col-1;
+                if(map[row][col-1] == 9) dfs(row, col-1, dir);
+                else return;
                 break;
             case 2:
-                nextR = row-1;
-                nextC = col;
+                if(map[row-1][col] == 9) dfs(row-1, col, dir);
+                else return;
                 break;
             case 3:
-                nextR = row;
-                nextC = col+1;
+                if(map[row][col+1] == 9) dfs(row, col+1, dir);
+                else return;
                 break;
             default:
                 break;
         }
-        // c. 네 방향 모두 청소 or 벽 + 뒤쪽 방향 벽x
-        if(map[nextR][nextC] == 9) {
-            dfs(nextR, nextC, dir);
-            return;
-        }
-        // d. 네 방향 모두 청소 or 벽 + 뒤쪽 방향 벽o
-        else {
-            return;
-        }
     }
-    
-    // 왼쪽 방향 구하기
-    nextR = row + direction[dir][0];
-    nextC = col + direction[dir][1];
-
-    bool isLeftBlank = false;
-    if(map[nextR][nextC] == 0) isLeftBlank = true;
-    
-    // isLeftBlank -> a. 왼쪽 방향으로 회전 후 전진
-    // !isLeftBlank -> b. 왼쪽 방향으로 회전 후 전진
-    switch (dir) {
-        case 0:
-            isLeftBlank ? dfs(nextR, nextC, 3) :  dfs(row, col, 3);
-            break;
-        case 1:
-            isLeftBlank ? dfs(nextR, nextC, 0) :  dfs(row, col, 0);
-            break;
-        case 2:
-            isLeftBlank ? dfs(nextR, nextC, 1) :  dfs(row, col, 1);
-            break;
-        case 3:
-            isLeftBlank ? dfs(nextR, nextC, 2) :  dfs(row, col, 2);
-            break;
-        default:
-            break;
+    else{
+        // isLeftBlank -> a. 왼쪽 방향으로 회전 후 전진
+        // !isLeftBlank -> b. 왼쪽 방향으로 회전
+        switch (dir) {
+            case 0:
+                if(map[row][col-1] == 0) dfs(row, col-1, 3);
+                else dfs(row, col, 3);
+                break;
+            case 1:
+                if(map[row-1][col] == 0) dfs(row-1, col, 0);
+                else dfs(row, col, 0);
+                break;
+            case 2:
+                if(map[row][col+1] == 0) dfs(row, col+1, 1);
+                else dfs(row, col, 1);
+                break;
+            case 3:
+                if(map[row+1][col] == 0) dfs(row+1, col, 2);
+                else dfs(row, col, 2);
+                break;
+            default:
+                break;
+        }
     }
 }
 
