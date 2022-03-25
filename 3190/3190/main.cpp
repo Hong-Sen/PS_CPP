@@ -38,6 +38,10 @@ int main(){
             snake[q.front().first][q.front().second] = 0;
             q.pop();
         }
+        // 사과 0 -> 사과 없애기
+        else {
+            map[r][c] = 0;
+        }
         // 머리 이동
         snake[r][c] = 1;
         q.push({r,c});
@@ -56,7 +60,6 @@ int main(){
         now++;
         
         if(now == spin.front().first){
-            cout<<now<<" "<<spin.front().second<<"\n";
             if(spin.front().second == 'L') {
                 dir = (dir+1) % 4;
             }
