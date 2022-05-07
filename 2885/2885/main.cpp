@@ -8,23 +8,21 @@
 #include <iostream>
 using namespace std;
 
-int k, len, cnt;
+int k, cnt;
+int s = 1;
 
-int main(){
+int main() {
     cin>>k;
-    int chocolate = 1;
-    while (1) {
-        if(chocolate >= k) break;
-        chocolate *= 2;
-    }
-    len = chocolate;
-    while (k>0) {
-        if(k >= chocolate) k -= chocolate;
-        else {
-            chocolate /= 2;
-            cnt++;
-        }
-    }
     
-    cout<<len<<" "<<cnt;
+    while (s<k) {
+        s *= 2;
+    }
+    cout<<s<<" ";
+    while (k!=s) {
+        cnt++;
+        s /= 2;
+        if (s == k)break;
+        if (k > s)k -= s;
+    }
+    cout<<cnt;
 }
