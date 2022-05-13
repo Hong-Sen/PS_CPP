@@ -9,11 +9,11 @@
 #include <vector>
 using namespace std;
 
-int N,M,diceX,diceY,K;
+int N,M,diceRow,diceCol,K;
 int map[21][21];
 int dice[7] = {0,0,0,0,0,0,0};
-int dx[5] = {0,0,0,-1,1};
-int dy[5] = {0,1,-1,0,0};
+int dy[5] = {0,0,0,-1,1};
+int dx[5] = {0,1,-1,0,0};
 
 void roll(int move) {
     vector<int> tmp;
@@ -68,25 +68,25 @@ void roll(int move) {
 }
 
 void play(int move) {
-    int nextX = diceX + dx[move];
-    int nextY = diceY + dy[move];
-    if(nextX >= 0 && nextX < N && nextY >=0 && nextY < M) {
+    int nextR = diceRow + dy[move];
+    int nextC = diceCol + dx[move];
+    if(nextR >= 0 && nextR < N && nextC >=0 && nextC < M) {
         roll(move);
-        if(map[nextX][nextY] == 0){
-            map[nextX][nextY] = dice[6];
+        if(map[nextR][nextC] == 0){
+            map[nextR][nextC] = dice[6];
         }
         else {
-            dice[6] = map[nextX][nextY];
-            map[nextX][nextY] = 0;
+            dice[6] = map[nextR][nextC];
+            map[nextR][nextC] = 0;
         }
-        diceX = nextX;
-        diceY = nextY;
+        diceRow = nextR;
+        diceCol = nextC;
         cout<<dice[1]<<"\n";
     }
 }
 
 int main(){
-    cin>>N>>M>>diceX>>diceY>>K;
+    cin>>N>>M>>diceRow>>diceCol>>K;
     for(int i=0; i<N; i++){
         for(int j=0; j<M; j++){
             cin>>map[i][j];
