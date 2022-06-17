@@ -1,14 +1,12 @@
-//
-//  main.cpp
-//  가운데 글자 가져오기
-//
-//  Created by 홍세은 on 2022/06/17.
-//
+#include <string>
+#include <vector>
 
-#include <iostream>
+using namespace std;
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
-    return 0;
+string solution(string s) {
+    string answer = "";
+    int n = s.size();
+    if(n % 2 == 0) answer = s.substr(n/2-1, 2);
+    else answer = s[n/2];
+    return answer;
 }
