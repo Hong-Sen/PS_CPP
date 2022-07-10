@@ -1,104 +1,68 @@
+//
+//  main.cpp
+//  5430
+//
+//  Created by 홍세은 on 2022/07/10.
+//
+
 #include <iostream>
-#include <vector>
 #include <deque>
 #include <algorithm>
+#include <sstream>
 #include <string>
 using namespace std;
 
+int T;
+string p,s;
+int n;
+
 int main(){
-    int T;
-    string result;
     cin>>T;
-    deque<int> v;
-    for(int i=0;i<T;i++){
-        cin.ignore();
-        string p;
-        cin>>p;
-        int n;
-        cin>>n;
-        v.clear();
+    while (T--) {
+        cin>>p>>n>>s;
+
+        // arr []괄호 삭제
+        s.erase(0,1);
+        s.erase(s.size()-1,1);
         
-        //입력받기 ex)[1,2,3,4]
-        string s;
-        cin>>s;
-        vector<char> num;
-        for(int j=1; j<s.length()-1; j++){
-            if(j==s.length()-2){
-                num.push_back(s.at(j));
-                string realnum;
-                for(int k=0; k<num.size(); k++){
-                    realnum += num[k];
-                }
-                v.push_back(stoi(realnum));
-            }
-            if(s.at(j) != ','){
-                num.push_back(s.at(j));
-            }
-            else if(s.at(j) == ',' ){
-                string realnum;
-                for(int k=0; k<num.size(); k++){
-                    realnum += num[k];
-                }
-                v.push_back(stoi(realnum));
-                num.clear();
-            }
-            
+        deque<string> dq;
+        stringstream ss(s);
+        string tmp;
+        while (getline(ss, tmp, ',')) {
+            dq.push_back(tmp);
         }
         
-        //flag = error발생시 false
-        bool flag = true;
-        //p명령 수행하기
-        bool reverse = false;
-        int front = 0;
-        int back = 0;
-        int k=0;
-        while(k != p.length()){
-            if(p.at(k) == 'R'){
-                if(!reverse)    reverse = true;
-                else    reverse = false;
+        bool isError = false;
+        bool isR = false;
+        
+        for(char c: p) {
+            if(c == 'R') {
+                isR = !isR;
             }
-            else if(p.at(k) == 'D'){
-                if(!reverse)    front++;
-                else    back++;
-                if(front > v.size() || back > v.size()){
-                    flag = false;
-                    cout<<"error\n";
+            else {
+                if(dq.empty()) {
+                    isError = true;
                     break;
                 }
+                if(isR) dq.pop_back();
+                else dq.pop_front();
             }
-            k++;
         }
-        //error가 아니면
-        if(flag){
-            while(front != 0){
-                v.pop_front();
-                front--;
-            }
-            while(back != 0){
-                v.pop_back();
-                back--;
-            }
-//                        for(int l=0; l<v.size();l++){
-//                            cout<<v[l]<<" ";
-//                        }
-            if(!reverse){
-                string ans = "[";
-                for(int l=0 ;l<v.size() ;l++){
-                    ans += to_string(v[l]);
-                    if(l != v.size()-1)     ans += ",";
+        if(isError) cout<<"error\n";
+        else if(dq.empty()) cout<<"[]\n";
+        else {
+            cout<<"[";
+            while (dq.size() > 1) {
+                if(isR) {
+                    cout<<dq.back()<<",";
+                    dq.pop_back();
                 }
-                ans += "]";
-                cout<<ans<<"\n";
-            }
-            else{
-                string ans = "[";
-                for(int l=v.size()-1 ;l>=0 ;l--){
-                    ans += to_string(v[l]);
-                    if(l != 0)     ans += ",";
+                else {
+                    cout<<dq.front()<<",";
+                    dq.pop_front();
                 }
-                ans += "]";
-                cout<<ans<<"\n";
             }
+            cout<<dq.front()<<"]\n";
         }
     }
 }
