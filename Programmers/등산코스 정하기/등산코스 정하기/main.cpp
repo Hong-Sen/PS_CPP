@@ -4,24 +4,25 @@
 #include <queue>
 using namespace std;
 
-int node[50001];
+bool isSummit[50001];
 int intensity[50001];
 vector<pair<int,int>> v[50001];
-priority_queue<pair<int,int>> pq;
+priority_queue<pair<int,int>> pq; // {intensity, gate}
+int resultIntensity = 10000001;
+int resultSummit = 0;
 
 vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector<int> summits) {
-    vector<int> result;
-    result.push_back(0); // {summit,intensity};
-    result.push_back(10000001);
-    
-    for(int i=1; i<=n; i++) intensity[i] = 10000001;
     for(auto p: paths) {
         v[p[0]].push_back({p[1], p[2]});
         v[p[1]].push_back({p[0], p[2]});
     }
     
+    // 최소의 intensity를 구해야 하므로 max 값보다 큰 10000001로 초기화
+    for(int i=1; i<=n; i++) intensity[i] = 10000001;
+    
+    // 산봉우리면 true
     for(int i: summits) {
-        node[i] = 2;
+        isSummit[i] = true;
     }
     
     for(int i: gates) {
@@ -33,14 +34,14 @@ vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector
         int cur = pq.top().second;
         int cost = pq.top().first;
         pq.pop();
-        if(cost > result[1]) continue;
-        if(node[cur] == 2) {
-            if(result[1] > cost) {
-                result[1] = cost;
-                result[0] = cur;
+        if(cost > resultIntensity) continue; // min intensity를 구하는 것이므로
+        if(isSummit[cur]) {
+            if(resultIntensity > cost) {
+                resultIntensity = cost;
+                resultSummit = cur;
             }
-            else if(result[1] == cost && result[0] > cur) {
-                result[0] = cur;
+            else if(resultIntensity == cost && resultSummit > cur) {
+                resultSummit = cur;
             }
             continue;
         }
@@ -52,5 +53,5 @@ vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector
             }
         }
     }
-    return result;
+    return {resultSummit, resultIntensity};
 }
