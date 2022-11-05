@@ -1,46 +1,28 @@
 #include <string>
 #include <vector>
+#include <iostream>
 #include <algorithm>
 using namespace std;
 
 long long solution(int n, vector<int> times) {
     long long answer = 0;
-    sort(times.begin(),times.end());
-    long long start = 0;
-    long long end = times[times.size()-1]*n;
-    
-    while(start < end) {
-        long long mid = (start+end) / 2;
-        long long sum = 0;
-        long long minRest = 1000001000;
-        long long minTime = 0;
-        long long sameTime = 0;
-        
-        if(mid == 0){
-            answer = 1;
-            break;
+    sort(times.begin(), times.end());
+    long long start = 1;
+    long long end = (long long) times[times.size()-1] * n;
+    long long mid = (start + end) / 2;
+    long long cnt = 0;
+    while(start <= end) {
+        mid = (start + end) / 2;
+        cnt = 0;
+        for(int i=0; i<times.size(); i++) {
+            cnt += mid / times[i];
         }
-        
-        for(int i:times) {
-            sum += mid/i;
-            if(minRest > mid%i){
-                minTime = i;
-                minRest = mid%i;
-            }
-            if(mid%i == 0){
-                sameTime++;
-            }
+        if(cnt < n) {
+            start = mid + 1;
         }
-        if(sum > n){
-            if(sum - sameTime + 1 <= n)  sum = n;
-            end = mid;
-        }
-        else if(sum < n){
-            start = mid;
-        }
-        if(sum == n){
-            answer = mid - minRest;
-            break;
+        else {
+            answer = mid;
+            end = mid-1;
         }
     }
     return answer;
