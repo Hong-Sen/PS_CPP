@@ -16,33 +16,18 @@ bool isPossible(int x, int y, int cnt) {
     return true;
 }
 
-void dfs(int x, int y, int cnt, string s) {
-    if(result != "" || cnt > K) return;
-    
-    if(x == R && y == C && cnt == 0) {
-        result = s;
-        return;
-    }
-    
-    for(int i=0; i<4; i++) {
-        int nextX = x + dx[i];
-        int nextY = y + dy[i];
-        if(nextX >= 1 && nextX <=N && nextY>=1 && nextY <=M) {
-            if(!isPossible(nextX, nextY, cnt-1))  {
-                continue;
-            }
-            dfs(nextX, nextY, cnt-1, s + direction[i]);
-        }
-            
-    }
-}
-
 string solution(int n, int m, int x, int y, int r, int c, int k) {
     N = n, M = m, K = k, R = r, C = c;
     
     if(!isPossible(x,y,k)) return "impossible";
     else {
-        dfs(x,y,k,"");
+        while(k) {
+            k--;
+            if(x+1<=n && isPossible(x+1,y,k)) {x += 1; result += 'd';}
+            else if(y-1>=1 && isPossible(x,y-1,k)) {y -= 1; result += 'l';}
+            else if(y+1<=m && isPossible(x,y+1,k)) {y += 1; result += 'r';}
+            else if(x-1>=1 && isPossible(x-1,y,k)) {x -= 1; result += 'u';}
+        }
         return result;
     }
 }
